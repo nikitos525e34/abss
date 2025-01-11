@@ -6,6 +6,10 @@ from PyQt5.QtWidgets import (
 from qss import QSS
 import os
 
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+from PIL import Image
+
 app = QApplication([])
 win = QWidget()
 
@@ -69,6 +73,54 @@ def showFilenamesList():
     lw_files.clear()
     for filename in filenames:
         lw_files.addItem(filename)
+
+class ImageProcessor:
+    def __init__(self):
+        self.imege = None
+        self.dir = None
+        self.filename = None
+        self.save_dir = "modfied/"
+
+    def loadImege(self, dir, filename):
+        self.dir = dir
+        self.filename = filename
+        imege_part = os.path.join(dir, filename)
+        self.imege = Image.open(imege_part)
+
+    def saveImege(self):
+        path = os.path.join(self.dir, self.save_dir)
+        if not (os.path.exists(path) or os.path.isdir(path)):
+            os.mkdir(path)
+        image_path = os.path.join(path, self.filename)
+        self.imege.save(image_path)
+
+    def showImage(self, path):
+        lb_image.hide()
+        pixmapimage = QPixmap(path)
+        w, h = lb_image.width(), lb_image.height()
+        pixmapimage = pixmapimage.scaled(w, h, Qt.KeepAspectRatio)
+        lb_image.setPixmap(pixmapimage)
+        lb_image.show()
+
+    def do_bw(self):
+        self.imege =self.imege.convert("L")
+        self.saveImege()
+        image_path = os.path.join(self.dir, self.save_dir, self.filename)
+        self.showImage(image_path)
+
+def showChsenImege():
+    if lw_files.currentRow() >= 0:
+        filename = lw_files.currentItem().text()
+        workimage.loadImage(workdir, filename)
+        image_path = os.path.join(workimage.dir, workimage.filename)
+        workimage.showImage(image_path)
+
+btn_dir.clicked.connect(showChsenImege)
+
+workimage = ImageProcessor()
+
+lw_files.currentRowChanged.connect(showChsenImege)
+btn_bw.clicked.connect(workimage.do_bw)
 
 app.exec()
 
