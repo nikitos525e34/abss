@@ -108,6 +108,40 @@ class ImageProcessor:
         image_path = os.path.join(self.dir, self.save_dir, self.filename)
         self.showImage(image_path)
 
+def do_left(self):
+        self.imege =self.imege.transpose(image.ROTATE_90)
+        self.saveImege()
+        image_path = os.path.join(self.dir, self.save_dir, self.filename)
+        self.showImage(image_path)
+
+def do_right(self):
+        self.imege =self.imege.transpose(image.ROTATE_270)
+        self.saveImege()
+        image_path = os.path.join(self.dir, self.save_dir, self.filename)
+        self.showImage(image_path)
+
+def do_right(self):
+        self.imege =self.imege.transpose(image.FLIP_LEFT_RIGHT)
+        self.saveImege()
+        image_path = os.path.join(self.dir, self.save_dir, self.filename)
+        self.showImage(image_path)
+
+ def do_sharpen(self):
+        self.imege =self.imege.transpose(imageFilter.SHARPEN)
+        self.saveImege()
+        image_path = os.path.join(self.dir, self.save_dir, self.filename)
+        self.showImage(image_path)
+
+def add_texture(self):
+    texture = Image.open("Neon1.png")
+    width, heigh = self.image.size
+    texture = texture.resize((width, height))
+    self.image.paste(texture, (0,0), texture)
+
+    self.saveImage()
+    image_path = os.path.join(workdir, self.save_dir, self.filename)
+    self.showImage(image_path)
+
 def showChsenImege():
     if lw_files.currentRow() >= 0:
         filename = lw_files.currentItem().text()
@@ -121,7 +155,11 @@ workimage = ImageProcessor()
 
 lw_files.currentRowChanged.connect(showChsenImege)
 btn_bw.clicked.connect(workimage.do_bw)
+btn_bw.clicked.connect(workimage.do_right)
+btn_bw.clicked.connect(workimage.do_sharpen)
+btn_bw.clicked.connect(workimage.do_flip)
 
 app.exec()
+
 
 
